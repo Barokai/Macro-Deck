@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -11,7 +12,12 @@ public static class MacroDeckServerHelper
     
     internal static bool UseHttps { get; private set; }
     
-    public static async Task Setup(int port, bool enableSsl, string? certificatePath, string? certificatePassword)
+    public static async Task Setup(
+        int port,
+        bool enableSsl,
+        string? certificatePath,
+        string? certificatePassword,
+        Action<IServiceCollection>? configureAdminServices = null)
     {
         if (_host is not null)
         {
@@ -38,7 +44,12 @@ public static class MacroDeckServerHelper
                         options.ListenAnyIP(port);
                     }
                 });
-            }).Build();
+            })
+            .ConfigureServices(services =>
+            {
+                configureAdminServices?.Invoke(services);
+            })
+            .Build();
 
         await _host.RunAsync();
     }

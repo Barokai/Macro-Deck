@@ -72,6 +72,19 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             btnCreateBackup = new ButtonPrimary();
             backupsPanel = new FlowLayoutPanel();
             lblBackups = new Label();
+            tabApiAccess = new TabPage();
+            lblApiAccess = new Label();
+            lblApiKeySection = new Label();
+            lblApiKeyDesc = new Label();
+            txtAdminKey = new RoundedTextBox();
+            btnCopyApiKey = new ButtonPrimary();
+            btnRegenerateApiKey = new ButtonPrimary();
+            lblMcpSection = new Label();
+            lblMcpDesc = new Label();
+            btnOpenMcpDocs = new ButtonPrimary();
+            lblCliSection = new Label();
+            lblCliDesc = new Label();
+            btnOpenCliDocs = new ButtonPrimary();
             tabAbout = new TabPage();
             btnGitHub = new PictureButton();
             label1 = new Label();
@@ -93,6 +106,7 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             ((ISupportInitialize)port).BeginInit();
             tabUpdater.SuspendLayout();
             tabBackups.SuspendLayout();
+            tabApiAccess.SuspendLayout();
             tabAbout.SuspendLayout();
             ((ISupportInitialize)btnGitHub).BeginInit();
             ((ISupportInitialize)pictureBox1).BeginInit();
@@ -106,6 +120,7 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             verticalTabControl.Controls.Add(tabConnection);
             verticalTabControl.Controls.Add(tabUpdater);
             verticalTabControl.Controls.Add(tabBackups);
+            verticalTabControl.Controls.Add(tabApiAccess);
             verticalTabControl.Controls.Add(tabAbout);
             verticalTabControl.Font = new Font("Tahoma", 12F);
             verticalTabControl.ImageList = tabIcons;
@@ -615,6 +630,217 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             lblBackups.Text = "Backups";
             lblBackups.UseMnemonic = false;
             // 
+            // tabApiAccess
+            // 
+            tabApiAccess.BackColor = Color.FromArgb(45, 45, 45);
+            tabApiAccess.Controls.Add(btnOpenCliDocs);
+            tabApiAccess.Controls.Add(lblCliDesc);
+            tabApiAccess.Controls.Add(lblCliSection);
+            tabApiAccess.Controls.Add(btnOpenMcpDocs);
+            tabApiAccess.Controls.Add(lblMcpDesc);
+            tabApiAccess.Controls.Add(lblMcpSection);
+            tabApiAccess.Controls.Add(btnRegenerateApiKey);
+            tabApiAccess.Controls.Add(btnCopyApiKey);
+            tabApiAccess.Controls.Add(txtAdminKey);
+            tabApiAccess.Controls.Add(lblApiKeyDesc);
+            tabApiAccess.Controls.Add(lblApiKeySection);
+            tabApiAccess.Controls.Add(lblApiAccess);
+            tabApiAccess.Font = new Font("Tahoma", 12F);
+            tabApiAccess.ForeColor = Color.White;
+            tabApiAccess.Location = new Point(204, 4);
+            tabApiAccess.Name = "tabApiAccess";
+            tabApiAccess.Padding = new Padding(3);
+            tabApiAccess.Size = new Size(923, 526);
+            tabApiAccess.TabIndex = 5;
+            tabApiAccess.Text = "API Access";
+            // 
+            // lblApiAccess
+            // 
+            lblApiAccess.AutoSize = true;
+            lblApiAccess.Font = new Font("Tahoma", 15.75F);
+            lblApiAccess.Location = new Point(3, 0);
+            lblApiAccess.Name = "lblApiAccess";
+            lblApiAccess.Size = new Size(115, 25);
+            lblApiAccess.TabIndex = 0;
+            lblApiAccess.Text = "API Access";
+            lblApiAccess.UseMnemonic = false;
+            // 
+            // lblApiKeySection
+            // 
+            lblApiKeySection.AutoSize = true;
+            lblApiKeySection.Font = new Font("Tahoma", 14.25F);
+            lblApiKeySection.ForeColor = Color.Gray;
+            lblApiKeySection.Location = new Point(3, 40);
+            lblApiKeySection.Name = "lblApiKeySection";
+            lblApiKeySection.TabIndex = 1;
+            lblApiKeySection.Text = "Admin API Key";
+            lblApiKeySection.UseMnemonic = false;
+            // 
+            // lblApiKeyDesc
+            // 
+            lblApiKeyDesc.AutoSize = true;
+            lblApiKeyDesc.Font = new Font("Tahoma", 10.5F);
+            lblApiKeyDesc.ForeColor = Color.Gray;
+            lblApiKeyDesc.Location = new Point(5, 67);
+            lblApiKeyDesc.Name = "lblApiKeyDesc";
+            lblApiKeyDesc.TabIndex = 2;
+            lblApiKeyDesc.Text = "This key authenticates the CLI tool and MCP server. Keep it private.";
+            lblApiKeyDesc.UseMnemonic = false;
+            // 
+            // txtAdminKey
+            // 
+            txtAdminKey.BackColor = Color.FromArgb(65, 65, 65);
+            txtAdminKey.Font = new Font("Tahoma", 12F);
+            txtAdminKey.Icon = null;
+            txtAdminKey.Location = new Point(5, 93);
+            txtAdminKey.MaxCharacters = 32767;
+            txtAdminKey.Multiline = false;
+            txtAdminKey.Name = "txtAdminKey";
+            txtAdminKey.Padding = new Padding(8, 5, 8, 5);
+            txtAdminKey.PasswordChar = false;
+            txtAdminKey.PlaceHolderColor = Color.Gray;
+            txtAdminKey.PlaceHolderText = "";
+            txtAdminKey.ReadOnly = true;
+            txtAdminKey.ScrollBars = ScrollBars.None;
+            txtAdminKey.SelectionStart = 0;
+            txtAdminKey.Size = new Size(530, 30);
+            txtAdminKey.TabIndex = 3;
+            txtAdminKey.TextAlignment = HorizontalAlignment.Left;
+            // 
+            // btnCopyApiKey
+            // 
+            btnCopyApiKey.BorderRadius = 8;
+            btnCopyApiKey.Cursor = Cursors.Hand;
+            btnCopyApiKey.FlatAppearance.BorderSize = 0;
+            btnCopyApiKey.FlatStyle = FlatStyle.Flat;
+            btnCopyApiKey.Font = new Font("Tahoma", 9.75F);
+            btnCopyApiKey.ForeColor = Color.White;
+            btnCopyApiKey.HoverColor = Color.FromArgb(0, 89, 184);
+            btnCopyApiKey.Icon = null;
+            btnCopyApiKey.Location = new Point(543, 93);
+            btnCopyApiKey.Name = "btnCopyApiKey";
+            btnCopyApiKey.Progress = 0;
+            btnCopyApiKey.ProgressColor = Color.FromArgb(0, 46, 94);
+            btnCopyApiKey.Size = new Size(90, 30);
+            btnCopyApiKey.TabIndex = 4;
+            btnCopyApiKey.Text = "Copy";
+            btnCopyApiKey.UseMnemonic = false;
+            btnCopyApiKey.UseVisualStyleBackColor = false;
+            btnCopyApiKey.UseWindowsAccentColor = true;
+            btnCopyApiKey.WriteProgress = true;
+            btnCopyApiKey.Click += BtnCopyApiKey_Click;
+            // 
+            // btnRegenerateApiKey
+            // 
+            btnRegenerateApiKey.BorderRadius = 8;
+            btnRegenerateApiKey.Cursor = Cursors.Hand;
+            btnRegenerateApiKey.FlatAppearance.BorderSize = 0;
+            btnRegenerateApiKey.FlatStyle = FlatStyle.Flat;
+            btnRegenerateApiKey.Font = new Font("Tahoma", 9.75F);
+            btnRegenerateApiKey.ForeColor = Color.White;
+            btnRegenerateApiKey.HoverColor = Color.FromArgb(0, 89, 184);
+            btnRegenerateApiKey.Icon = null;
+            btnRegenerateApiKey.Location = new Point(641, 93);
+            btnRegenerateApiKey.Name = "btnRegenerateApiKey";
+            btnRegenerateApiKey.Progress = 0;
+            btnRegenerateApiKey.ProgressColor = Color.FromArgb(0, 46, 94);
+            btnRegenerateApiKey.Size = new Size(150, 30);
+            btnRegenerateApiKey.TabIndex = 5;
+            btnRegenerateApiKey.Text = "Regenerate";
+            btnRegenerateApiKey.UseMnemonic = false;
+            btnRegenerateApiKey.UseVisualStyleBackColor = false;
+            btnRegenerateApiKey.UseWindowsAccentColor = true;
+            btnRegenerateApiKey.WriteProgress = true;
+            btnRegenerateApiKey.Click += BtnRegenerateApiKey_Click;
+            // 
+            // lblMcpSection
+            // 
+            lblMcpSection.AutoSize = true;
+            lblMcpSection.Font = new Font("Tahoma", 14.25F);
+            lblMcpSection.ForeColor = Color.Gray;
+            lblMcpSection.Location = new Point(3, 145);
+            lblMcpSection.Name = "lblMcpSection";
+            lblMcpSection.TabIndex = 6;
+            lblMcpSection.Text = "MCP Server";
+            lblMcpSection.UseMnemonic = false;
+            // 
+            // lblMcpDesc
+            // 
+            lblMcpDesc.Font = new Font("Tahoma", 10.5F);
+            lblMcpDesc.ForeColor = Color.Gray;
+            lblMcpDesc.Location = new Point(5, 172);
+            lblMcpDesc.Name = "lblMcpDesc";
+            lblMcpDesc.Size = new Size(900, 100);
+            lblMcpDesc.TabIndex = 7;
+            lblMcpDesc.UseMnemonic = false;
+            // 
+            // btnOpenMcpDocs
+            // 
+            btnOpenMcpDocs.BorderRadius = 8;
+            btnOpenMcpDocs.Cursor = Cursors.Hand;
+            btnOpenMcpDocs.FlatAppearance.BorderSize = 0;
+            btnOpenMcpDocs.FlatStyle = FlatStyle.Flat;
+            btnOpenMcpDocs.Font = new Font("Tahoma", 9.75F);
+            btnOpenMcpDocs.ForeColor = Color.White;
+            btnOpenMcpDocs.HoverColor = Color.FromArgb(0, 89, 184);
+            btnOpenMcpDocs.Icon = null;
+            btnOpenMcpDocs.Location = new Point(5, 280);
+            btnOpenMcpDocs.Name = "btnOpenMcpDocs";
+            btnOpenMcpDocs.Progress = 0;
+            btnOpenMcpDocs.ProgressColor = Color.FromArgb(0, 46, 94);
+            btnOpenMcpDocs.Size = new Size(180, 30);
+            btnOpenMcpDocs.TabIndex = 8;
+            btnOpenMcpDocs.Text = "Open MCP docs";
+            btnOpenMcpDocs.UseMnemonic = false;
+            btnOpenMcpDocs.UseVisualStyleBackColor = false;
+            btnOpenMcpDocs.UseWindowsAccentColor = true;
+            btnOpenMcpDocs.WriteProgress = true;
+            btnOpenMcpDocs.Click += BtnOpenMcpDocs_Click;
+            // 
+            // lblCliSection
+            // 
+            lblCliSection.AutoSize = true;
+            lblCliSection.Font = new Font("Tahoma", 14.25F);
+            lblCliSection.ForeColor = Color.Gray;
+            lblCliSection.Location = new Point(3, 330);
+            lblCliSection.Name = "lblCliSection";
+            lblCliSection.TabIndex = 9;
+            lblCliSection.Text = "CLI Tool";
+            lblCliSection.UseMnemonic = false;
+            // 
+            // lblCliDesc
+            // 
+            lblCliDesc.Font = new Font("Tahoma", 10.5F);
+            lblCliDesc.ForeColor = Color.Gray;
+            lblCliDesc.Location = new Point(5, 357);
+            lblCliDesc.Name = "lblCliDesc";
+            lblCliDesc.Size = new Size(900, 80);
+            lblCliDesc.TabIndex = 10;
+            lblCliDesc.UseMnemonic = false;
+            // 
+            // btnOpenCliDocs
+            // 
+            btnOpenCliDocs.BorderRadius = 8;
+            btnOpenCliDocs.Cursor = Cursors.Hand;
+            btnOpenCliDocs.FlatAppearance.BorderSize = 0;
+            btnOpenCliDocs.FlatStyle = FlatStyle.Flat;
+            btnOpenCliDocs.Font = new Font("Tahoma", 9.75F);
+            btnOpenCliDocs.ForeColor = Color.White;
+            btnOpenCliDocs.HoverColor = Color.FromArgb(0, 89, 184);
+            btnOpenCliDocs.Icon = null;
+            btnOpenCliDocs.Location = new Point(5, 445);
+            btnOpenCliDocs.Name = "btnOpenCliDocs";
+            btnOpenCliDocs.Progress = 0;
+            btnOpenCliDocs.ProgressColor = Color.FromArgb(0, 46, 94);
+            btnOpenCliDocs.Size = new Size(180, 30);
+            btnOpenCliDocs.TabIndex = 11;
+            btnOpenCliDocs.Text = "Open CLI docs";
+            btnOpenCliDocs.UseMnemonic = false;
+            btnOpenCliDocs.UseVisualStyleBackColor = false;
+            btnOpenCliDocs.UseWindowsAccentColor = true;
+            btnOpenCliDocs.WriteProgress = true;
+            btnOpenCliDocs.Click += BtnOpenCliDocs_Click;
+            // 
             // tabAbout
             // 
             tabAbout.BackColor = Color.FromArgb(45, 45, 45);
@@ -822,6 +1048,8 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             tabUpdater.PerformLayout();
             tabBackups.ResumeLayout(false);
             tabBackups.PerformLayout();
+            tabApiAccess.ResumeLayout(false);
+            tabApiAccess.PerformLayout();
             tabAbout.ResumeLayout(false);
             tabAbout.PerformLayout();
             ((ISupportInitialize)btnGitHub).EndInit();
@@ -865,6 +1093,19 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
         private CheckBox checkAutoUpdate;
         private TabPage tabBackups;
         private Label lblBackups;
+        private TabPage tabApiAccess;
+        private Label lblApiAccess;
+        private Label lblApiKeySection;
+        private Label lblApiKeyDesc;
+        private RoundedTextBox txtAdminKey;
+        private ButtonPrimary btnCopyApiKey;
+        private ButtonPrimary btnRegenerateApiKey;
+        private Label lblMcpSection;
+        private Label lblMcpDesc;
+        private ButtonPrimary btnOpenMcpDocs;
+        private Label lblCliSection;
+        private Label lblCliDesc;
+        private ButtonPrimary btnOpenCliDocs;
         private FlowLayoutPanel backupsPanel;
         private ButtonPrimary btnCreateBackup;
         private PictureButton btnGitHub;

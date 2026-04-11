@@ -71,6 +71,7 @@ public partial class SettingsView : UserControl
         LoadNetworkConfiguration();
         LoadAutoUpdate();
         LoadBackups();
+        LoadApiAccess();
 
         lblInstalledVersion.Text = MacroDeck.Version.ToString();
         lblWebsocketAPIVersion.Text = MacroDeck.ApiVersion.ToString();
@@ -280,6 +281,61 @@ public partial class SettingsView : UserControl
     private void BackupManager_DeleteSuccess(object sender, EventArgs e)
     {
         LoadBackups();
+    }
+
+    private void LoadApiAccess()
+    {
+        var key = MacroDeck.Configuration.AdminApiKey;
+        txtAdminKey.Text = key;
+        var url = $"http://localhost:{MacroDeck.Configuration.HostPort}";
+        lblMcpDesc.Text =
+            $"Run MacroDeck.Mcp.exe with environment variables to expose MacroDeck tools to any MCP-capable LLM client (Claude Desktop, VS Code Copilot, etc.).\r\n\r\n" +
+            $"  MACRODECK_URL = {url}\r\n" +
+            $"  MACRODECK_API_KEY = {key}\r\n\r\n" +
+            "See the MCP docs for cloud setup instructions (Claude Desktop, VS Code).";
+        lblCliDesc.Text =
+            $"Use the macrodeck CLI to manage profiles, buttons, variables and plugins from a terminal or shell scripts.\r\n\r\n" +
+            $"  macrodeck --url {url} --key {key} profile list";
+    }
+
+    private void BtnCopyApiKey_Click(object sender, EventArgs e)
+    {
+        Clipboard.SetText(MacroDeck.Configuration.AdminApiKey);
+    }
+
+    private void BtnRegenerateApiKey_Click(object sender, EventArgs e)
+    {
+        using var msgBox = new MessageBox();
+        if (msgBox.ShowDialog(
+            "Regenerate API Key",
+            "This will invalidate the current key. You will need to update any CLI or MCP server configurations. Continue?",
+            MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+
+        MacroDeck.Configuration.AdminApiKey = Guid.NewGuid().ToString("N");
+        MacroDeck.Configuration.Save(ApplicationPaths.MainConfigFilePath);
+        LoadApiAccess();
+    }
+
+    private void BtnOpenMcpDocs_Click(object sender, EventArgs e)
+    {
+        new Process
+        {
+            StartInfo = new ProcessStartInfo("https://github.com/Macro-Deck-App/Macro-Deck/blob/main/docs/mcp-usage.md")
+            {
+                UseShellExecute = true,
+            }
+        }.Start();
+    }
+
+    private void BtnOpenCliDocs_Click(object sender, EventArgs e)
+    {
+        new Process
+        {
+            StartInfo = new ProcessStartInfo("https://github.com/Macro-Deck-App/Macro-Deck/blob/main/docs/cli-usage.md")
+            {
+                UseShellExecute = true,
+            }
+        }.Start();
     }
 
     private void BtnGitHub_Click(object sender, EventArgs e)

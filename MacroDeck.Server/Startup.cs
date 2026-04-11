@@ -1,4 +1,5 @@
-﻿using MacroDeck.Server.StartupConfig;
+﻿using MacroDeck.Server.Middleware;
+using MacroDeck.Server.StartupConfig;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ public class Startup
         {
             KeepAliveInterval = TimeSpan.FromMinutes(2)
         });
+        app.UseMiddleware<AdminApiKeyMiddleware>();
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {

@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using MacroDeck.Server;
 using MacroDeck.Server.DataTypes;
+using MacroDeck.Server.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using SuchByte.MacroDeck.Configuration;
 using SuchByte.MacroDeck.Device;
@@ -11,6 +13,7 @@ using SuchByte.MacroDeck.JSON;
 using SuchByte.MacroDeck.Language;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Profiles;
+using SuchByte.MacroDeck.Server.AdminServices;
 using SuchByte.MacroDeck.Utils;
 
 namespace SuchByte.MacroDeck.Server;
@@ -42,7 +45,15 @@ public static class MacroDeckServer
         var certificatePassword = MacroDeck.Configuration.SslCertificatePassword;
         try
         {
-            await MacroDeckServerHelper.Setup(port, enableSsl, certificatePath, certificatePassword);
+            await MacroDeckServerHelper.Setup(port, enableSsl, certificatePath, certificatePassword,
+                services =>
+                {
+                    services.AddSingleton<IProfileAdminService, ProfileAdminService>();
+                    services.AddSingleton<IVariableAdminService, VariableAdminService>();
+                    services.AddSingleton<IPluginAdminService, PluginAdminService>();
+                    services.AddSingleton<IDeviceAdminService, DeviceAdminService>();
+                    services.AddSingleton<IConfigAdminService, ConfigAdminService>();
+                });
         }
         catch (Exception ex)
         {

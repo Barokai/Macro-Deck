@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MacroDeck.Mcp</RootNamespace>
+    <AssemblyName>MacroDeck.Mcp</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Override global TargetFramework – MCP server is cross-platform -->
+    <TargetFramework>net8.0</TargetFramework>
+    <Description>MacroDeck MCP (Model Context Protocol) server – exposes MacroDeck management as LLM-callable tools via the stdio transport.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+  </ItemGroup>
+
+</Project>

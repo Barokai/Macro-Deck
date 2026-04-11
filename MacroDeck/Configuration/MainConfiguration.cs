@@ -70,6 +70,9 @@ public class MainConfiguration
     [JsonProperty("Language")]
     public string Language { get; set; } = "English";
 
+    [JsonProperty("AdminApiKey")]
+    public string AdminApiKey { get; set; } = Guid.NewGuid().ToString("N");
+
     public void Save(string path)
     {
         var serializer = new JsonSerializer

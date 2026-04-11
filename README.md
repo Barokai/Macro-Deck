@@ -31,6 +31,15 @@
 # Download
 https://macrodeck.org/download
 
+# CLI & MCP Server
+
+Macro Deck ships a command-line tool and an MCP (Model Context Protocol) server that let you manage profiles, buttons, variables, and plugins programmatically or through natural language via LLM clients (Claude Desktop, VS Code Copilot, etc.).
+
+- **[CLI usage guide](docs/cli-usage.md)** — manage MacroDeck from a terminal or shell scripts
+- **[MCP server usage guide](docs/mcp-usage.md)** — connect any MCP-capable LLM client to MacroDeck
+
+The Admin API key required to connect is displayed in MacroDeck → Settings → **API Access**.
+
 # Create own plugins
 Learn how to create your own plugins in the wiki: https://github.com/SuchByte/Macro-Deck/wiki/Plugin-API
 
