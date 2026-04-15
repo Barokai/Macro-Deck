@@ -80,10 +80,13 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             btnCopyApiKey = new ButtonPrimary();
             btnRegenerateApiKey = new ButtonPrimary();
             lblMcpSection = new Label();
-            lblMcpDesc = new Label();
+            lblMcpIntro = new Label();
+            lblMcpDesc = new TextBox();
+            lblMcpFooter = new Label();
             btnOpenMcpDocs = new ButtonPrimary();
             lblCliSection = new Label();
-            lblCliDesc = new Label();
+            lblCliIntro = new Label();
+            lblCliDesc = new TextBox();
             btnOpenCliDocs = new ButtonPrimary();
             tabAbout = new TabPage();
             btnGitHub = new PictureButton();
@@ -635,9 +638,12 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             tabApiAccess.BackColor = Color.FromArgb(45, 45, 45);
             tabApiAccess.Controls.Add(btnOpenCliDocs);
             tabApiAccess.Controls.Add(lblCliDesc);
+            tabApiAccess.Controls.Add(lblCliIntro);
             tabApiAccess.Controls.Add(lblCliSection);
             tabApiAccess.Controls.Add(btnOpenMcpDocs);
+            tabApiAccess.Controls.Add(lblMcpFooter);
             tabApiAccess.Controls.Add(lblMcpDesc);
+            tabApiAccess.Controls.Add(lblMcpIntro);
             tabApiAccess.Controls.Add(lblMcpSection);
             tabApiAccess.Controls.Add(btnRegenerateApiKey);
             tabApiAccess.Controls.Add(btnCopyApiKey);
@@ -744,7 +750,7 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             btnRegenerateApiKey.Name = "btnRegenerateApiKey";
             btnRegenerateApiKey.Progress = 0;
             btnRegenerateApiKey.ProgressColor = Color.FromArgb(0, 46, 94);
-            btnRegenerateApiKey.Size = new Size(150, 30);
+            btnRegenerateApiKey.Size = new Size(165, 30);
             btnRegenerateApiKey.TabIndex = 5;
             btnRegenerateApiKey.Text = "Regenerate";
             btnRegenerateApiKey.UseMnemonic = false;
@@ -764,15 +770,41 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             lblMcpSection.Text = "MCP Server";
             lblMcpSection.UseMnemonic = false;
             // 
+            // lblMcpIntro
+            // 
+            lblMcpIntro.Font = new Font("Tahoma", 10.5F);
+            lblMcpIntro.ForeColor = Color.Gray;
+            lblMcpIntro.Location = new Point(5, 172);
+            lblMcpIntro.Name = "lblMcpIntro";
+            lblMcpIntro.Size = new Size(800, 36);
+            lblMcpIntro.TabIndex = 7;
+            lblMcpIntro.UseMnemonic = false;
+            // 
             // lblMcpDesc
             // 
+            lblMcpDesc.BackColor = Color.FromArgb(58, 58, 58);
+            lblMcpDesc.BorderStyle = BorderStyle.FixedSingle;
+            lblMcpDesc.Cursor = Cursors.IBeam;
             lblMcpDesc.Font = new Font("Tahoma", 10.5F);
-            lblMcpDesc.ForeColor = Color.Gray;
-            lblMcpDesc.Location = new Point(5, 172);
+            lblMcpDesc.ForeColor = Color.WhiteSmoke;
+            lblMcpDesc.Location = new Point(5, 212);
+            lblMcpDesc.Multiline = true;
             lblMcpDesc.Name = "lblMcpDesc";
-            lblMcpDesc.Size = new Size(900, 100);
-            lblMcpDesc.TabIndex = 7;
-            lblMcpDesc.UseMnemonic = false;
+            lblMcpDesc.ReadOnly = true;
+            lblMcpDesc.ScrollBars = ScrollBars.None;
+            lblMcpDesc.Size = new Size(800, 40);
+            lblMcpDesc.TabIndex = 8;
+            lblMcpDesc.TabStop = true;
+            // 
+            // lblMcpFooter
+            // 
+            lblMcpFooter.Font = new Font("Tahoma", 10.5F);
+            lblMcpFooter.ForeColor = Color.Gray;
+            lblMcpFooter.Location = new Point(5, 262);
+            lblMcpFooter.Name = "lblMcpFooter";
+            lblMcpFooter.Size = new Size(800, 18);
+            lblMcpFooter.TabIndex = 9;
+            lblMcpFooter.UseMnemonic = false;
             // 
             // btnOpenMcpDocs
             // 
@@ -784,12 +816,12 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             btnOpenMcpDocs.ForeColor = Color.White;
             btnOpenMcpDocs.HoverColor = Color.FromArgb(0, 89, 184);
             btnOpenMcpDocs.Icon = null;
-            btnOpenMcpDocs.Location = new Point(5, 280);
+            btnOpenMcpDocs.Location = new Point(5, 285);
             btnOpenMcpDocs.Name = "btnOpenMcpDocs";
             btnOpenMcpDocs.Progress = 0;
             btnOpenMcpDocs.ProgressColor = Color.FromArgb(0, 46, 94);
             btnOpenMcpDocs.Size = new Size(180, 30);
-            btnOpenMcpDocs.TabIndex = 8;
+            btnOpenMcpDocs.TabIndex = 10;
             btnOpenMcpDocs.Text = "Open MCP docs";
             btnOpenMcpDocs.UseMnemonic = false;
             btnOpenMcpDocs.UseVisualStyleBackColor = false;
@@ -802,21 +834,37 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             lblCliSection.AutoSize = true;
             lblCliSection.Font = new Font("Tahoma", 14.25F);
             lblCliSection.ForeColor = Color.Gray;
-            lblCliSection.Location = new Point(3, 330);
+            lblCliSection.Location = new Point(3, 323);
             lblCliSection.Name = "lblCliSection";
-            lblCliSection.TabIndex = 9;
+            lblCliSection.TabIndex = 11;
             lblCliSection.Text = "CLI Tool";
             lblCliSection.UseMnemonic = false;
             // 
+            // lblCliIntro
+            // 
+            lblCliIntro.Font = new Font("Tahoma", 10.5F);
+            lblCliIntro.ForeColor = Color.Gray;
+            lblCliIntro.Location = new Point(5, 350);
+            lblCliIntro.Name = "lblCliIntro";
+            lblCliIntro.Size = new Size(800, 20);
+            lblCliIntro.TabIndex = 12;
+            lblCliIntro.UseMnemonic = false;
+            // 
             // lblCliDesc
             // 
+            lblCliDesc.BackColor = Color.FromArgb(58, 58, 58);
+            lblCliDesc.BorderStyle = BorderStyle.FixedSingle;
+            lblCliDesc.Cursor = Cursors.IBeam;
             lblCliDesc.Font = new Font("Tahoma", 10.5F);
-            lblCliDesc.ForeColor = Color.Gray;
-            lblCliDesc.Location = new Point(5, 357);
+            lblCliDesc.ForeColor = Color.WhiteSmoke;
+            lblCliDesc.Location = new Point(5, 374);
+            lblCliDesc.Multiline = true;
             lblCliDesc.Name = "lblCliDesc";
-            lblCliDesc.Size = new Size(900, 80);
-            lblCliDesc.TabIndex = 10;
-            lblCliDesc.UseMnemonic = false;
+            lblCliDesc.ReadOnly = true;
+            lblCliDesc.ScrollBars = ScrollBars.None;
+            lblCliDesc.Size = new Size(800, 24);
+            lblCliDesc.TabIndex = 13;
+            lblCliDesc.TabStop = true;
             // 
             // btnOpenCliDocs
             // 
@@ -828,12 +876,12 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
             btnOpenCliDocs.ForeColor = Color.White;
             btnOpenCliDocs.HoverColor = Color.FromArgb(0, 89, 184);
             btnOpenCliDocs.Icon = null;
-            btnOpenCliDocs.Location = new Point(5, 445);
+            btnOpenCliDocs.Location = new Point(5, 414);
             btnOpenCliDocs.Name = "btnOpenCliDocs";
             btnOpenCliDocs.Progress = 0;
             btnOpenCliDocs.ProgressColor = Color.FromArgb(0, 46, 94);
             btnOpenCliDocs.Size = new Size(180, 30);
-            btnOpenCliDocs.TabIndex = 11;
+            btnOpenCliDocs.TabIndex = 14;
             btnOpenCliDocs.Text = "Open CLI docs";
             btnOpenCliDocs.UseMnemonic = false;
             btnOpenCliDocs.UseVisualStyleBackColor = false;
@@ -1101,10 +1149,13 @@ namespace SuchByte.MacroDeck.GUI.MainWindowContents
         private ButtonPrimary btnCopyApiKey;
         private ButtonPrimary btnRegenerateApiKey;
         private Label lblMcpSection;
-        private Label lblMcpDesc;
+        private Label lblMcpIntro;
+        private TextBox lblMcpDesc;
+        private Label lblMcpFooter;
         private ButtonPrimary btnOpenMcpDocs;
         private Label lblCliSection;
-        private Label lblCliDesc;
+        private Label lblCliIntro;
+        private TextBox lblCliDesc;
         private ButtonPrimary btnOpenCliDocs;
         private FlowLayoutPanel backupsPanel;
         private ButtonPrimary btnCreateBackup;

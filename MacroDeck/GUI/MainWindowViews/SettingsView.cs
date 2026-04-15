@@ -288,14 +288,17 @@ public partial class SettingsView : UserControl
         var key = MacroDeck.Configuration.AdminApiKey;
         txtAdminKey.Text = key;
         var url = $"http://localhost:{MacroDeck.Configuration.HostPort}";
+        lblMcpIntro.Text =
+            "Run MacroDeck.Mcp.exe with environment variables to expose MacroDeck tools to any MCP-capable LLM client (Claude Desktop, VS Code Copilot, etc.).";
         lblMcpDesc.Text =
-            $"Run MacroDeck.Mcp.exe with environment variables to expose MacroDeck tools to any MCP-capable LLM client (Claude Desktop, VS Code Copilot, etc.).\r\n\r\n" +
-            $"  MACRODECK_URL = {url}\r\n" +
-            $"  MACRODECK_API_KEY = {key}\r\n\r\n" +
-            "See the MCP docs for cloud setup instructions (Claude Desktop, VS Code).";
+            $"MACRODECK_URL = {url}\r\n" +
+            $"MACRODECK_API_KEY = {key}";
+        lblMcpFooter.Text = "See the MCP docs for cloud setup instructions (Claude Desktop, VS Code).";
+
+        lblCliIntro.Text =
+            "Use the macrodeck CLI to manage profiles, buttons, variables and plugins from a terminal or shell scripts.";
         lblCliDesc.Text =
-            $"Use the macrodeck CLI to manage profiles, buttons, variables and plugins from a terminal or shell scripts.\r\n\r\n" +
-            $"  macrodeck --url {url} --key {key} profile list";
+            $"macrodeck --url {url} --key {key} profile list";
     }
 
     private void BtnCopyApiKey_Click(object sender, EventArgs e)
