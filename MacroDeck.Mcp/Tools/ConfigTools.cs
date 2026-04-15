@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json;
 using MacroDeck.Mcp;
 using ModelContextProtocol.Server;
 
@@ -19,6 +20,20 @@ public class ConfigTools
         "Supported fields: autoUpdates (bool), updateBetaVersions (bool), enableAdbServer (bool), " +
         "enableAdbAutoStartApp (bool), askOnNewConnections (bool), blockNewConnections (bool), language (string).")]
     public async Task<string> UpdateConfiguration(
-        [Description("JSON object with only the fields to update, e.g. {\"blockNewConnections\":true}.")] string settingsJson) =>
-        await _api.PatchJsonAsync("api/config", settingsJson);
+        [Description("JSON object with only the fields to update, e.g. {\"blockNewConnections\":true}.")] string settingsJson)
+    {
+        try
+        {
+            // Parse the JSON string into a dictionary for flexibility
+            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            var patch = JsonSerializer.Deserialize<Dictionary<string, object>>(settingsJson, options)
+                ?? throw new ArgumentException("Invalid JSON in settingsJson parameter");
+            
+            return await _api.PatchJsonAsync("api/config", patch);
+        }
+        catch (JsonException ex)
+        {
+            throw new ArgumentException($"Invalid JSON in settingsJson: {ex.Message}", ex);
+        }
+    }
 }

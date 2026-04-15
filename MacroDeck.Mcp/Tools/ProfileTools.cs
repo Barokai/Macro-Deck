@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json.Nodes;
 using MacroDeck.Mcp;
 using ModelContextProtocol.Server;
 
@@ -105,15 +106,37 @@ public class ProfileTools
         });
     }
 
-    [McpServerTool, Description("Update an existing button's actions or labels.")]
+    [McpServerTool, Description(
+        "Update an existing button with partial fields. Provide only what you want to change in updateJson, e.g. {\"labelOffText\":\"⬇ Download\\n{speed}\"}. Existing values are preserved for omitted fields.")]
     public async Task<string> UpdateButton(
         [Description("The profileId of the profile.")] string profileId,
         [Description("The folderId of the folder.")] string folderId,
         [Description("The buttonGuid to update.")] string buttonGuid,
-        [Description("JSON object matching the CreateButton parameters to update.")] string updateJson)
+        [Description("JSON patch object with fields to update. Example: {\"labelOffText\":\"My label\"}")] string updateJson)
     {
+        JsonObject patch;
+        try
+        {
+            patch = JsonNode.Parse(updateJson)?.AsObject()
+                    ?? throw new ArgumentException("updateJson must be a JSON object.");
+        }
+        catch (Exception ex)
+        {
+            throw new ArgumentException(
+                "updateJson is not valid JSON. Pass an object like {\"labelOffText\":\"⬇ Download\\n{speed}\"}.", ex);
+        }
+
+        var existingRaw = await _api.GetJsonAsync($"api/profiles/{profileId}/folders/{folderId}/buttons/{buttonGuid}");
+        var merged = JsonNode.Parse(existingRaw)?.AsObject()
+                     ?? throw new InvalidOperationException("Unable to load existing button state.");
+
+        foreach (var (key, value) in patch)
+        {
+            merged[key] = value?.DeepClone();
+        }
+
         return await _api.PutJsonAsync(
-            $"api/profiles/{profileId}/folders/{folderId}/buttons/{buttonGuid}", updateJson);
+            $"api/profiles/{profileId}/folders/{folderId}/buttons/{buttonGuid}", merged);
     }
 
     [McpServerTool, Description("Delete a button from a folder.")]
