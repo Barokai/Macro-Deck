@@ -74,7 +74,7 @@ Add to your `.vscode/mcp.json` (or user-level MCP settings):
 | `delete_folder` | Delete a folder and all its child folders |
 | `list_buttons` | List buttons in a folder |
 | `create_button` | Place a button at a grid position with action assignments |
-| `update_button` | Update a button's labels or actions |
+| `update_button` | Update a button partially (patch-style) while preserving omitted fields |
 | `delete_button` | Remove a button |
 
 ### Plugin Management
@@ -119,6 +119,21 @@ Once connected, you can prompt the LLM naturally:
 - *"Add a button at position 0,0 in the root folder of the Gaming profile that runs the 'Launch Application' action from the System plugin"*
 - *"Set a variable called 'game_mode' to true"*
 - *"Search the extension store for OBS plugins and install the first result"*
+
+## Notes For `update_button`
+
+- The tool expects `updateJson` to be a JSON object (not an array or scalar).
+- Only request fields are applied during update: `positionX`, `positionY`, `actions`, `actionsRelease`, `actionsLongPress`, `actionsLongPressRelease`, `labelOffText`, `labelOnText`, `stateBindingVariable`.
+- Fields you omit are preserved from the current button state.
+
+## Debugging MCP Process Exit
+
+If your MCP client reports that the server transport closed unexpectedly:
+
+- Verify `MACRODECK_URL` and `MACRODECK_API_KEY` are set correctly.
+- Ensure MacroDeck is running and reachable from the configured URL.
+- Rebuild and restart `MacroDeck.Mcp.exe` after code changes.
+- Run the server manually and capture stderr output for diagnosis.
 
 ## Security
 

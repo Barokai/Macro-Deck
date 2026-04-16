@@ -184,7 +184,7 @@ macrodeck device set-blocked unknown-device --blocked true
 
 ```
 macrodeck config get
-macrodeck config update [--host <address>] [--port <n>] [--adb <true|false>] [--ssl <true|false>] [--auto-start <true|false>]
+macrodeck config update [--auto-start <true|false>] [--auto-updates <true|false>] [--update-beta-versions <true|false>] [--enable-adb-server <true|false>] [--enable-adb-auto-start-app <true|false>] [--ask-on-new-connections <true|false>] [--block-new-connections <true|false>] [--language <name>]
 ```
 
 **Examples:**
@@ -193,11 +193,17 @@ macrodeck config update [--host <address>] [--port <n>] [--adb <true|false>] [--
 # View current configuration
 macrodeck config get
 
-# Change the listening port (requires restart)
-macrodeck config update --port 9000
-
 # Enable ADB support for Android USB connections
-macrodeck config update --adb true
+macrodeck config update --enable-adb-server true
+
+# Auto-start Macro Deck Client app when connected via ADB
+macrodeck config update --enable-adb-auto-start-app true
+
+# Block new device connections
+macrodeck config update --block-new-connections true
+
+# Change language
+macrodeck config update --language German
 ```
 
 ---

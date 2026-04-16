@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using MacroDeck.Mcp;
 using ModelContextProtocol.Server;
@@ -127,16 +128,53 @@ public class ProfileTools
         }
 
         var existingRaw = await _api.GetJsonAsync($"api/profiles/{profileId}/folders/{folderId}/buttons/{buttonGuid}");
-        var merged = JsonNode.Parse(existingRaw)?.AsObject()
+        var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var merged = JsonSerializer.Deserialize<ButtonUpdateRequest>(existingRaw, jsonOptions)
                      ?? throw new InvalidOperationException("Unable to load existing button state.");
 
-        foreach (var (key, value) in patch)
-        {
-            merged[key] = value?.DeepClone();
-        }
+        if (patch.TryGetPropertyValue("positionX", out var positionXNode) && positionXNode is not null)
+            merged.PositionX = positionXNode.GetValue<int>();
+        if (patch.TryGetPropertyValue("positionY", out var positionYNode) && positionYNode is not null)
+            merged.PositionY = positionYNode.GetValue<int>();
+
+        if (patch.TryGetPropertyValue("actions", out var actionsNode))
+            merged.Actions = actionsNode?.Deserialize<List<ActionAssignment>>() ?? new List<ActionAssignment>();
+        if (patch.TryGetPropertyValue("actionsRelease", out var actionsReleaseNode))
+            merged.ActionsRelease = actionsReleaseNode?.Deserialize<List<ActionAssignment>>() ?? new List<ActionAssignment>();
+        if (patch.TryGetPropertyValue("actionsLongPress", out var actionsLongPressNode))
+            merged.ActionsLongPress = actionsLongPressNode?.Deserialize<List<ActionAssignment>>() ?? new List<ActionAssignment>();
+        if (patch.TryGetPropertyValue("actionsLongPressRelease", out var actionsLongPressReleaseNode))
+            merged.ActionsLongPressRelease = actionsLongPressReleaseNode?.Deserialize<List<ActionAssignment>>() ?? new List<ActionAssignment>();
+
+        if (patch.TryGetPropertyValue("labelOffText", out var labelOffTextNode))
+            merged.LabelOffText = labelOffTextNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("labelOnText", out var labelOnTextNode))
+            merged.LabelOnText = labelOnTextNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("stateBindingVariable", out var stateBindingVariableNode))
+            merged.StateBindingVariable = stateBindingVariableNode?.GetValue<string>();
 
         return await _api.PutJsonAsync(
             $"api/profiles/{profileId}/folders/{folderId}/buttons/{buttonGuid}", merged);
+    }
+
+    private sealed class ButtonUpdateRequest
+    {
+        public int PositionX { get; set; }
+        public int PositionY { get; set; }
+        public List<ActionAssignment> Actions { get; set; } = new();
+        public List<ActionAssignment> ActionsRelease { get; set; } = new();
+        public List<ActionAssignment> ActionsLongPress { get; set; } = new();
+        public List<ActionAssignment> ActionsLongPressRelease { get; set; } = new();
+        public string? LabelOffText { get; set; }
+        public string? LabelOnText { get; set; }
+        public string? StateBindingVariable { get; set; }
+    }
+
+    private sealed class ActionAssignment
+    {
+        public string PluginName { get; set; } = string.Empty;
+        public string ActionClass { get; set; } = string.Empty;
+        public string Configuration { get; set; } = string.Empty;
     }
 
     [McpServerTool, Description("Delete a button from a folder.")]
