@@ -1,6 +1,7 @@
 using MacroDeck.Server.Dto;
 using MacroDeck.Server.Dto.Requests;
 using MacroDeck.Server.Services;
+using System.Drawing;
 using SuchByte.MacroDeck.Device;
 using SuchByte.MacroDeck.Folders;
 using SuchByte.MacroDeck.Plugins;
@@ -123,6 +124,8 @@ public class ProfileAdminService : IProfileAdminService
             ActionsLongPressRelease = ResolveActions(request.ActionsLongPressRelease),
         };
 
+        ApplyButtonStyle(button, request);
+
         folder.ActionButtons.Add(button);
         ProfileManager.Save();
         return ToDto(button);
@@ -143,6 +146,8 @@ public class ProfileAdminService : IProfileAdminService
         button.ActionsRelease = ResolveActions(request.ActionsRelease);
         button.ActionsLongPress = ResolveActions(request.ActionsLongPress);
         button.ActionsLongPressRelease = ResolveActions(request.ActionsLongPressRelease);
+
+        ApplyButtonStyle(button, request);
 
         ProfileManager.Save();
         return ToDto(button);
@@ -171,15 +176,74 @@ public class ProfileAdminService : IProfileAdminService
         requests
             .Select(r =>
             {
-                if (!PluginManager.Plugins.TryGetValue(r.PluginName, out var plugin)) return null;
+                // Prefer explicit plugin name, but support legacy payloads where pluginName is empty.
+                var pluginFound = !string.IsNullOrWhiteSpace(r.PluginName)
+                    && PluginManager.Plugins.TryGetValue(r.PluginName, out var namedPlugin);
+
+                var plugin = pluginFound
+                    ? namedPlugin
+                    : PluginManager.Plugins.Values.FirstOrDefault(p =>
+                        p.Actions.Any(a => a.GetType().Name == r.ActionClass));
+
+                if (plugin is null) return null;
+
                 var action = plugin.Actions.FirstOrDefault(a => a.GetType().Name == r.ActionClass);
                 if (action is null) return null;
+
                 var instance = (PluginAction)Activator.CreateInstance(action.GetType())!;
                 instance.Configuration = r.Configuration;
                 return instance;
             })
             .Where(a => a is not null)
             .ToList()!;
+
+    private static void ApplyButtonStyle(ActionButton.ActionButton button, CreateButtonRequest request)
+    {
+        if (button.LabelOff == null) button.LabelOff = new ActionButton.ButtonLabel();
+        if (button.LabelOn == null) button.LabelOn = new ActionButton.ButtonLabel();
+
+        var iconOff = BuildIconString(request.IconPack, request.IconName) ?? request.IconOff;
+        var iconOn = BuildIconString(request.IconPack, request.IconNameOn) ?? request.IconOn;
+
+        if (!string.IsNullOrWhiteSpace(iconOff)) button.IconOff = iconOff;
+        if (!string.IsNullOrWhiteSpace(iconOn)) button.IconOn = iconOn;
+
+        if (TryParseColor(request.BackgroundColorOff, out var bgOff)) button.BackColorOff = bgOff;
+        if (TryParseColor(request.BackgroundColorOn, out var bgOn)) button.BackColorOn = bgOn;
+        if (TryParseColor(request.LabelColorOff, out var labelOff)) button.LabelOff.LabelColor = labelOff;
+        if (TryParseColor(request.LabelColorOn, out var labelOn)) button.LabelOn.LabelColor = labelOn;
+    }
+
+    private static bool TryParseColor(string? value, out Color color)
+    {
+        color = Color.Empty;
+        if (string.IsNullOrWhiteSpace(value)) return false;
+        try
+        {
+            color = ColorTranslator.FromHtml(value);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static string? BuildIconString(string? iconPack, string? iconName)
+    {
+        if (string.IsNullOrWhiteSpace(iconPack) || string.IsNullOrWhiteSpace(iconName)) return null;
+        return $"{iconPack}.{iconName}";
+    }
+
+    private static string ToHex(Color color) => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+
+    private static (string? pack, string? name) SplitIconString(string? icon)
+    {
+        if (string.IsNullOrWhiteSpace(icon)) return (null, null);
+        var idx = icon.IndexOf('.');
+        if (idx <= 0 || idx == icon.Length - 1) return (null, null);
+        return (icon[..idx], icon[(idx + 1)..]);
+    }
 
     private static ProfileDto ToDto(MacroDeckProfile p) => new()
     {
@@ -204,26 +268,41 @@ public class ProfileAdminService : IProfileAdminService
         ApplicationToTrigger = f.ApplicationToTrigger ?? string.Empty,
     };
 
-    private static ButtonDto ToDto(ActionButton.ActionButton b) => new()
+    private static ButtonDto ToDto(ActionButton.ActionButton b)
     {
-        Guid = b.Guid,
-        PositionX = b.Position_X,
-        PositionY = b.Position_Y,
-        State = b.State,
-        LabelOffText = b.LabelOff?.LabelText,
-        LabelOnText = b.LabelOn?.LabelText,
-        StateBindingVariable = b.StateBindingVariable,
-        Actions = b.Actions?.Select(ActionToDto).ToList() ?? [],
-        ActionsRelease = b.ActionsRelease?.Select(ActionToDto).ToList() ?? [],
-        ActionsLongPress = b.ActionsLongPress?.Select(ActionToDto).ToList() ?? [],
-        ActionsLongPressRelease = b.ActionsLongPressRelease?.Select(ActionToDto).ToList() ?? [],
-    };
+        var (iconPack, iconName) = SplitIconString(b.IconOff);
+        var (_, iconNameOn) = SplitIconString(b.IconOn);
+
+        return new ButtonDto
+        {
+            Guid = b.Guid,
+            PositionX = b.Position_X,
+            PositionY = b.Position_Y,
+            State = b.State,
+            LabelOffText = b.LabelOff?.LabelText,
+            LabelOnText = b.LabelOn?.LabelText,
+            StateBindingVariable = b.StateBindingVariable,
+            IconPack = iconPack,
+            IconName = iconName,
+            IconNameOn = iconNameOn,
+            IconOff = b.IconOff,
+            IconOn = b.IconOn,
+            BackgroundColorOff = ToHex(b.BackColorOff),
+            BackgroundColorOn = ToHex(b.BackColorOn),
+            LabelColorOff = b.LabelOff is null ? null : ToHex(b.LabelOff.LabelColor),
+            LabelColorOn = b.LabelOn is null ? null : ToHex(b.LabelOn.LabelColor),
+            Actions = b.Actions?.Select(ActionToDto).ToList() ?? [],
+            ActionsRelease = b.ActionsRelease?.Select(ActionToDto).ToList() ?? [],
+            ActionsLongPress = b.ActionsLongPress?.Select(ActionToDto).ToList() ?? [],
+            ActionsLongPressRelease = b.ActionsLongPressRelease?.Select(ActionToDto).ToList() ?? [],
+        };
+    }
 
     private static ActionDto ActionToDto(PluginAction a) => new()
     {
-        PluginName = a.ActionButton?.Actions.Any() == true
-            ? PluginManager.Plugins.FirstOrDefault(kv => kv.Value.Actions.Contains(a)).Key ?? string.Empty
-            : string.Empty,
+        PluginName = PluginManager.Plugins
+            .FirstOrDefault(kv => kv.Value.Actions.Any(pa => pa.GetType().Name == a.GetType().Name)).Key
+            ?? string.Empty,
         ActionClass = a.GetType().Name,
         Configuration = a.Configuration ?? string.Empty,
         ConfigurationSummary = a.ConfigurationSummary ?? string.Empty,

@@ -91,7 +91,7 @@ public class ProfileTools
         [Description("Zero-based column (X) position of the button in the grid.")] int positionX,
         [Description("Zero-based row (Y) position of the button in the grid.")] int positionY,
         [Description("JSON array of action objects to run on short press. Each: {\"pluginName\":\"...\",\"actionClass\":\"...\",\"configuration\":\"...\"}. Use empty array [] for a display-only button.")] string actionsJson = "[]",
-        [Description("Label displayed when button state is OFF. Supports Cottle templates, e.g. '{volume_level}%'.")] string? labelOffText = null,
+        [Description("Label displayed when button state is OFF. Supports Cottle templates, e.g. '{volume_level}%' or '{round(speedtestdownload, 2)} Mbps'.")] string? labelOffText = null,
         [Description("Label displayed when button state is ON.")] string? labelOnText = null,
         [Description("Variable name to auto-sync button state to (e.g. 'my_toggle'). Leave empty to disable.")] string? stateBindingVariable = null)
     {
@@ -108,7 +108,7 @@ public class ProfileTools
     }
 
     [McpServerTool, Description(
-        "Update an existing button with partial fields. Provide only what you want to change in updateJson, e.g. {\"labelOffText\":\"⬇ Download\\n{speed}\"}. Existing values are preserved for omitted fields.")]
+        "Update an existing button with partial fields. Provide only what you want to change in updateJson, e.g. {\"labelOffText\":\"⬇ Download\\n{round(speedtestdownload, 2)} Mbps\",\"backgroundColorOff\":\"#3498DB\"}. Existing values are preserved for omitted fields.")]
     public async Task<string> UpdateButton(
         [Description("The profileId of the profile.")] string profileId,
         [Description("The folderId of the folder.")] string folderId,
@@ -153,6 +153,25 @@ public class ProfileTools
         if (patch.TryGetPropertyValue("stateBindingVariable", out var stateBindingVariableNode))
             merged.StateBindingVariable = stateBindingVariableNode?.GetValue<string>();
 
+        if (patch.TryGetPropertyValue("iconPack", out var iconPackNode))
+            merged.IconPack = iconPackNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("iconName", out var iconNameNode))
+            merged.IconName = iconNameNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("iconNameOn", out var iconNameOnNode))
+            merged.IconNameOn = iconNameOnNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("iconOff", out var iconOffNode))
+            merged.IconOff = iconOffNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("iconOn", out var iconOnNode))
+            merged.IconOn = iconOnNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("backgroundColorOff", out var backgroundColorOffNode))
+            merged.BackgroundColorOff = backgroundColorOffNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("backgroundColorOn", out var backgroundColorOnNode))
+            merged.BackgroundColorOn = backgroundColorOnNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("labelColorOff", out var labelColorOffNode))
+            merged.LabelColorOff = labelColorOffNode?.GetValue<string>();
+        if (patch.TryGetPropertyValue("labelColorOn", out var labelColorOnNode))
+            merged.LabelColorOn = labelColorOnNode?.GetValue<string>();
+
         return await _api.PutJsonAsync(
             $"api/profiles/{profileId}/folders/{folderId}/buttons/{buttonGuid}", merged);
     }
@@ -168,6 +187,15 @@ public class ProfileTools
         public string? LabelOffText { get; set; }
         public string? LabelOnText { get; set; }
         public string? StateBindingVariable { get; set; }
+        public string? IconPack { get; set; }
+        public string? IconName { get; set; }
+        public string? IconNameOn { get; set; }
+        public string? IconOff { get; set; }
+        public string? IconOn { get; set; }
+        public string? BackgroundColorOff { get; set; }
+        public string? BackgroundColorOn { get; set; }
+        public string? LabelColorOff { get; set; }
+        public string? LabelColorOn { get; set; }
     }
 
     private sealed class ActionAssignment

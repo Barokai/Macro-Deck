@@ -123,8 +123,20 @@ Once connected, you can prompt the LLM naturally:
 ## Notes For `update_button`
 
 - The tool expects `updateJson` to be a JSON object (not an array or scalar).
-- Only request fields are applied during update: `positionX`, `positionY`, `actions`, `actionsRelease`, `actionsLongPress`, `actionsLongPressRelease`, `labelOffText`, `labelOnText`, `stateBindingVariable`.
+- Only request fields are applied during update: `positionX`, `positionY`, `actions`, `actionsRelease`, `actionsLongPress`, `actionsLongPressRelease`, `labelOffText`, `labelOnText`, `stateBindingVariable`, `iconPack`, `iconName`, `iconNameOn`, `iconOff`, `iconOn`, `backgroundColorOff`, `backgroundColorOn`, `labelColorOff`, `labelColorOn`.
 - Fields you omit are preserved from the current button state.
+
+## Label Formatting (Cottle)
+
+MacroDeck label templates use Cottle syntax. For built-in functions and formatting helpers, see:
+
+- [Cottle built-in functions](https://cottle.readthedocs.io/en/stable/page/03-builtin.html)
+
+Recommended patterns:
+
+- Numeric formatting: `{round(speedtestdownload, 2)} {speedtestdownloadunit}`
+- Conditional fallback: `{default(spotify_playing_title, 'No Track')}`
+- Multi-line label text in JSON: `"labelOffText":"Download\n{round(speedtestdownload, 2)} Mbps"`
 
 ## Debugging MCP Process Exit
 

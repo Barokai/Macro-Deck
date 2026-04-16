@@ -21,4 +21,13 @@ public class ButtonDto
     public string? LabelOffText { get; set; }
     public string? LabelOnText { get; set; }
     public string? StateBindingVariable { get; set; }
+    public string? IconPack { get; set; }
+    public string? IconName { get; set; }
+    public string? IconNameOn { get; set; }
+    public string? IconOff { get; set; }
+    public string? IconOn { get; set; }
+    public string? BackgroundColorOff { get; set; }
+    public string? BackgroundColorOn { get; set; }
+    public string? LabelColorOff { get; set; }
+    public string? LabelColorOn { get; set; }
 }
