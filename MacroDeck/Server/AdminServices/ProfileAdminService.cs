@@ -177,12 +177,14 @@ public class ProfileAdminService : IProfileAdminService
             .Select(r =>
             {
                 // Prefer explicit plugin name, but support legacy payloads where pluginName is empty.
-                var pluginFound = !string.IsNullOrWhiteSpace(r.PluginName)
-                    && PluginManager.Plugins.TryGetValue(r.PluginName, out var namedPlugin);
+                SuchByte.MacroDeck.Plugins.MacroDeckPlugin? plugin = null;
 
-                var plugin = pluginFound
-                    ? namedPlugin
-                    : PluginManager.Plugins.Values.FirstOrDefault(p =>
+                if (!string.IsNullOrWhiteSpace(r.PluginName))
+                {
+                    PluginManager.Plugins.TryGetValue(r.PluginName, out plugin);
+                }
+
+                plugin ??= PluginManager.Plugins.Values.FirstOrDefault(p =>
                         p.Actions.Any(a => a.GetType().Name == r.ActionClass));
 
                 if (plugin is null) return null;
@@ -218,9 +220,37 @@ public class ProfileAdminService : IProfileAdminService
     {
         color = Color.Empty;
         if (string.IsNullOrWhiteSpace(value)) return false;
+
+        var raw = value.Trim();
+
+        // Some clients pass colors as quoted JSON fragments (e.g. "#1DB954").
+        if (raw.Length >= 2 && raw[0] == '"' && raw[^1] == '"')
+        {
+            raw = raw[1..^1].Trim();
+        }
+
+        // Accept plain hex without leading '#'.
+        var isHex = raw.Length == 6 || raw.Length == 8;
+        if (isHex)
+        {
+            foreach (var ch in raw)
+            {
+                if (!Uri.IsHexDigit(ch))
+                {
+                    isHex = false;
+                    break;
+                }
+            }
+
+            if (isHex)
+            {
+                raw = "#" + raw;
+            }
+        }
+
         try
         {
-            color = ColorTranslator.FromHtml(value);
+            color = ColorTranslator.FromHtml(raw);
             return true;
         }
         catch
