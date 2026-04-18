@@ -133,7 +133,8 @@ public class ActionButton : IDisposable
         set
         {
             _iconOff = value;
-            IconChanged?.Invoke(this, EventArgs.Empty);
+                MacroDeckServer.UpdateState(this);
+                IconChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -143,7 +144,8 @@ public class ActionButton : IDisposable
         set
         {
             _iconOn = value;
-            IconChanged?.Invoke(this, EventArgs.Empty);
+                MacroDeckServer.UpdateState(this);
+                IconChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
