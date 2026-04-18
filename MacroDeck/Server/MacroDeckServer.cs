@@ -53,6 +53,7 @@ public static class MacroDeckServer
                     services.AddSingleton<IPluginAdminService, PluginAdminService>();
                     services.AddSingleton<IDeviceAdminService, DeviceAdminService>();
                     services.AddSingleton<IConfigAdminService, ConfigAdminService>();
+                    services.AddSingleton<IIconAdminService, IconAdminService>();
                 });
         }
         catch (Exception ex)
