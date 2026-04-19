@@ -127,6 +127,7 @@ public class ProfileAdminService : IProfileAdminService
         ApplyButtonStyle(button, request);
 
         folder.ActionButtons.Add(button);
+        ProfileManager.UpdateVariableLabels(button);
         ProfileManager.Save();
         return ToDto(button);
     }
@@ -149,6 +150,7 @@ public class ProfileAdminService : IProfileAdminService
 
         ApplyButtonStyle(button, request);
 
+        ProfileManager.UpdateVariableLabels(button);
         ProfileManager.Save();
         return ToDto(button);
     }
