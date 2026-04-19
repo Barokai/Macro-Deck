@@ -96,6 +96,8 @@ public class ProfileTools
         [Description("Variable name to auto-sync button state to (e.g. 'my_toggle'). Leave empty to disable.")] string? stateBindingVariable = null)
     {
         var actions = System.Text.Json.JsonSerializer.Deserialize<object[]>(actionsJson) ?? [];
+        labelOffText = NormalizeNewlines(labelOffText);
+        labelOnText = NormalizeNewlines(labelOnText);
         return await _api.PostJsonAsync($"api/profiles/{profileId}/folders/{folderId}/buttons", new
         {
             positionX, positionY,
@@ -147,9 +149,9 @@ public class ProfileTools
             merged.ActionsLongPressRelease = actionsLongPressReleaseNode?.Deserialize<List<ActionAssignment>>() ?? new List<ActionAssignment>();
 
         if (patch.TryGetPropertyValue("labelOffText", out var labelOffTextNode))
-            merged.LabelOffText = labelOffTextNode?.GetValue<string>();
+            merged.LabelOffText = NormalizeNewlines(labelOffTextNode?.GetValue<string>());
         if (patch.TryGetPropertyValue("labelOnText", out var labelOnTextNode))
-            merged.LabelOnText = labelOnTextNode?.GetValue<string>();
+            merged.LabelOnText = NormalizeNewlines(labelOnTextNode?.GetValue<string>());
         if (patch.TryGetPropertyValue("stateBindingVariable", out var stateBindingVariableNode))
             merged.StateBindingVariable = stateBindingVariableNode?.GetValue<string>();
 
@@ -203,6 +205,17 @@ public class ProfileTools
         public string PluginName { get; set; } = string.Empty;
         public string ActionClass { get; set; } = string.Empty;
         public string Configuration { get; set; } = string.Empty;
+    }
+
+    private static string? NormalizeNewlines(string? value)
+    {
+        if (value is null) return null;
+
+        // Be tolerant of clients that pass escaped newline sequences instead of actual line breaks.
+        return value
+            .Replace("\\r\\n", "\n")
+            .Replace("\\n", "\n")
+            .Replace("\\r", "\n");
     }
 
     [McpServerTool, Description("Delete a button from a folder.")]
