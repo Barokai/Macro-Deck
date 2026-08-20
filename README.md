@@ -41,6 +41,20 @@ Macro Deck host at runtime, so it is not copied to your plugin's output.
 # Download
 [Website](https://macro-deck.app)
 
+# CLI & MCP Server
+
+Macro Deck ships a command-line tool and an MCP (Model Context Protocol) server that let you manage profiles, buttons, variables, and plugins programmatically or through natural language via LLM clients (Claude Desktop, VS Code Copilot, etc.).
+
+- **[CLI usage guide](docs/cli-usage.md)** — manage MacroDeck from a terminal or shell scripts
+- **[MCP server usage guide](docs/mcp-usage.md)** — connect any MCP-capable LLM client to MacroDeck
+
+The Admin API key required to connect is displayed in MacroDeck → Settings → **API Access**.
+
+# Create own plugins
+Learn how to create your own plugins in the wiki: https://github.com/SuchByte/Macro-Deck/wiki/Plugin-API
+
+# Helping with the translation
+Please help me with the translation of Macro Deck on [POEditor](https://poeditor.com/join/project/3y5UBkJvQD)
 [GitHub Releases](https://github.com/Macro-Deck-App/Macro-Deck/releases)
 
 # Special thanks

@@ -134,6 +134,7 @@ public class ActionButton : IDisposable
         set
         {
             field = value;
+            MacroDeckServer.UpdateState(this);
             IconChanged?.Invoke(this, EventArgs.Empty);
         }
     } = string.Empty;
@@ -144,6 +145,7 @@ public class ActionButton : IDisposable
         set
         {
             field = value;
+            MacroDeckServer.UpdateState(this);
             IconChanged?.Invoke(this, EventArgs.Empty);
         }
     } = string.Empty;

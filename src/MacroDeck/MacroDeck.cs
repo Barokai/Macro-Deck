@@ -103,6 +103,13 @@ public class MacroDeck : NativeWindow
         Configuration = MainConfiguration.LoadFromFile(ApplicationPaths.MainConfigFilePath);
         SentryConfiguration.Enabled = Configuration.SendAnonymousErrorReports;
         LanguageManager.SetLanguage(Configuration.Language);
+        
+        // Migrate old configs that don't have AdminApiKey
+        if (!File.ReadAllText(ApplicationPaths.MainConfigFilePath).Contains("AdminApiKey"))
+        {
+            Configuration.Save(ApplicationPaths.MainConfigFilePath);
+            MacroDeckLogger.Information("Config migrated: AdminApiKey added");
+        }
         _ = new HotkeyManager();
         VariableManager.Initialize();
         PluginManager.Load();

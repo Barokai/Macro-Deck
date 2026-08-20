@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using MacroDeck.Server.Middleware;
 using SuchByte.MacroDeck.StartupConfig;
 
 namespace SuchByte.MacroDeck;
@@ -25,6 +26,7 @@ public class ServerStartup
         {
             KeepAliveInterval = TimeSpan.FromMinutes(2)
         });
+        app.UseMiddleware<AdminApiKeyMiddleware>();
         app.UseRouting();
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }

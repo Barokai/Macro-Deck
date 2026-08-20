@@ -74,6 +74,9 @@ public class MainConfiguration
     [JsonProperty("Privacy.SendAnonymousErrorReports")]
     public bool SendAnonymousErrorReports { get; set; } = true;
 
+    [JsonProperty("AdminApiKey")]
+    public string AdminApiKey { get; set; } = Guid.NewGuid().ToString("N");
+
     public void Save(string path)
     {
         var serializer = new JsonSerializer

@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SuchByte.MacroDeck.DataTypes;
+using Microsoft.Extensions.DependencyInjection;
+using SuchByte.MacroDeck.Configuration;
 using SuchByte.MacroDeck.Device;
 using SuchByte.MacroDeck.Enums;
 using SuchByte.MacroDeck.Extension;
@@ -8,6 +10,8 @@ using Serilog;
 using SuchByte.MacroDeck.JSON;
 using SuchByte.MacroDeck.Language;
 using SuchByte.MacroDeck.Profiles;
+using MacroDeck.Server.Services;
+using SuchByte.MacroDeck.Server.AdminServices;
 using SuchByte.MacroDeck.Services;
 using SuchByte.MacroDeck.Utils;
 
@@ -41,7 +45,16 @@ public static class MacroDeckServer
         var certificate = MacroDeck.Configuration.EnableSsl ? SslCertificateService.GetX509Certificate() : null;
         try
         {
-            await MacroDeckServerHelper.Setup(port, certificate);
+            await MacroDeckServerHelper.Setup(port, certificate,
+                services =>
+                {
+                    services.AddSingleton<IProfileAdminService, ProfileAdminService>();
+                    services.AddSingleton<IVariableAdminService, VariableAdminService>();
+                    services.AddSingleton<IPluginAdminService, PluginAdminService>();
+                    services.AddSingleton<IDeviceAdminService, DeviceAdminService>();
+                    services.AddSingleton<IConfigAdminService, ConfigAdminService>();
+                    services.AddSingleton<IIconAdminService, IconAdminService>();
+                });
         }
         catch (Exception ex)
         {

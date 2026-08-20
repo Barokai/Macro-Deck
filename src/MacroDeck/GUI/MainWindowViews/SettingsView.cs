@@ -79,6 +79,7 @@ public partial class SettingsView : UserControl
         LoadNetworkConfiguration();
         LoadAutoUpdate();
         LoadBackups();
+        LoadApiAccess();
 
         lblInstalledVersion.Text = MacroDeck.Version.ToString();
         lblWebsocketAPIVersion.Text = MacroDeck.ApiVersion.ToString();
@@ -312,6 +313,87 @@ public partial class SettingsView : UserControl
     private void BackupManager_DeleteSuccess(object sender, EventArgs e)
     {
         LoadBackups();
+    }
+
+    private void LoadApiAccess()
+    {
+        var key = MacroDeck.Configuration.AdminApiKey;
+        txtAdminKey.Text = key;
+        var url = BuildAdminApiUrl();
+        lblMcpIntro.Text =
+            "Run MacroDeck.Mcp.exe with environment variables to expose MacroDeck tools to any MCP-capable LLM client (Claude Desktop, VS Code Copilot, etc.).";
+        lblMcpDesc.Text =
+            $"MACRODECK_URL = {url}\r\n" +
+            $"MACRODECK_API_KEY = {key}";
+        lblMcpFooter.Text = "See the MCP docs for cloud setup instructions (Claude Desktop, VS Code).";
+
+        lblCliIntro.Text =
+            "Use the macrodeck CLI to manage profiles, buttons, variables and plugins from a terminal or shell scripts.";
+        lblCliDesc.Text =
+            $"macrodeck --url {url} --key {key} profile list";
+    }
+
+    private static string BuildAdminApiUrl()
+    {
+        var scheme = MacroDeck.Configuration.EnableSsl ? "https" : "http";
+        var host = NormalizeAdminApiHost(MacroDeck.Configuration.HostAddress);
+        return $"{scheme}://{host}:{MacroDeck.Configuration.HostPort}";
+    }
+
+    private static string NormalizeAdminApiHost(string? hostAddress)
+    {
+        if (string.IsNullOrWhiteSpace(hostAddress))
+        {
+            return "<host-or-ip>";
+        }
+
+        var host = hostAddress.Trim();
+        if (host is "0.0.0.0" or "::" or "[::]")
+        {
+            return "<host-or-ip>";
+        }
+
+        return host.Contains(':') && !host.StartsWith("[") ? $"[{host}]" : host;
+    }
+
+    private void BtnCopyApiKey_Click(object sender, EventArgs e)
+    {
+        System.Windows.Forms.Clipboard.SetText(MacroDeck.Configuration.AdminApiKey);
+    }
+
+    private void BtnRegenerateApiKey_Click(object sender, EventArgs e)
+    {
+        using var msgBox = new MessageBox();
+        if (msgBox.ShowDialog(
+            "Regenerate API Key",
+            "This will invalidate the current key. You will need to update any CLI or MCP server configurations. Continue?",
+            MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+
+        MacroDeck.Configuration.AdminApiKey = Guid.NewGuid().ToString("N");
+        MacroDeck.Configuration.Save(ApplicationPaths.MainConfigFilePath);
+        LoadApiAccess();
+    }
+
+    private void BtnOpenMcpDocs_Click(object sender, EventArgs e)
+    {
+        new Process
+        {
+            StartInfo = new ProcessStartInfo("https://github.com/Macro-Deck-App/Macro-Deck/blob/main/docs/mcp-usage.md")
+            {
+                UseShellExecute = true,
+            }
+        }.Start();
+    }
+
+    private void BtnOpenCliDocs_Click(object sender, EventArgs e)
+    {
+        new Process
+        {
+            StartInfo = new ProcessStartInfo("https://github.com/Macro-Deck-App/Macro-Deck/blob/main/docs/cli-usage.md")
+            {
+                UseShellExecute = true,
+            }
+        }.Start();
     }
 
     private void BtnGitHub_Click(object sender, EventArgs e)
