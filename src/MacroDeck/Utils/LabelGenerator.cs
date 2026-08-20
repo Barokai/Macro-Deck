@@ -23,21 +23,31 @@ public class LabelGenerator
             return img;
         }
 
-        text = SanitizeLabelText(text);
+        using var ownedFont = font;
+
         if (string.IsNullOrEmpty(text))
         {
-            font.Dispose();
             return img;
         }
 
         if (NeedsUnicodeFallback(text))
         {
-            return DrawLabelWithTextRenderer(img, text, buttonLabelPosition, font, textColor, shadowColor, shadowOffset);
+            return DrawLabelWithTextRenderer(img, text, buttonLabelPosition, ownedFont, textColor, shadowColor, shadowOffset);
         }
 
-        var g = Graphics.FromImage(img);
+        text = SanitizeLabelText(text);
+        if (string.IsNullOrEmpty(text))
+        {
+            return img;
+        }
 
-        var sf = new StringFormat
+        return DrawLabelWithGraphicsPath(img, text, buttonLabelPosition, ownedFont, textColor);
+    }
+
+    private static Image DrawLabelWithGraphicsPath(Image img, string text, ButtonLabelPosition buttonLabelPosition, Font font, Color textColor)
+    {
+        using var g = Graphics.FromImage(img);
+        using var sf = new StringFormat
         {
             Alignment = StringAlignment.Center
         };
@@ -55,16 +65,16 @@ public class LabelGenerator
             sf.LineAlignment = StringAlignment.Far;
         }
 
-        var p = new Pen(Color.Black, 2)
+        using var p = new Pen(Color.Black, 2)
         {
             LineJoin = LineJoin.Round
         };
 
-        var b = new SolidBrush(textColor);
+        using var b = new SolidBrush(textColor);
 
         var r = new Rectangle(2, 2, img.Width - 2, img.Height - 2);
 
-        var gp = new GraphicsPath();
+        using var gp = new GraphicsPath();
 
         gp.AddString(text, font.FontFamily, (int)font.Style, font.Size * 5, r, sf);
 
@@ -73,13 +83,6 @@ public class LabelGenerator
 
         g.DrawPath(p, gp);
         g.FillPath(b, gp);
-
-        gp.Dispose();
-        b.Dispose();
-        p.Dispose();
-        font.Dispose();
-        sf.Dispose();
-        g.Dispose();
 
         return img;
     }
@@ -108,7 +111,6 @@ public class LabelGenerator
 
         TextRenderer.DrawText(g, text, renderFont, shadowRect, shadowColor, flags);
         TextRenderer.DrawText(g, text, renderFont, bounds, textColor, flags);
-        font.Dispose();
 
         return img;
     }
@@ -126,7 +128,7 @@ public class LabelGenerator
         }
     }
 
-    private static bool NeedsUnicodeFallback(string text)
+    internal static bool NeedsUnicodeFallback(string text)
     {
         foreach (var rune in text.EnumerateRunes())
         {
@@ -143,7 +145,7 @@ public class LabelGenerator
         return false;
     }
 
-    private static string SanitizeLabelText(string text)
+    internal static string SanitizeLabelText(string text)
     {
         if (string.IsNullOrEmpty(text)) return text;
 
