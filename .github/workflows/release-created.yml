@@ -37,6 +37,9 @@ jobs:
     uses: ./.github/workflows/publish-nuget.yml
     needs: [tests, release-windows]
     secrets: inherit
+    permissions:
+      contents: read
+      id-token: write
     with:
       version: ${{ github.event.release.name }}
       branch: ${{ github.event.release.target_commitish }}
