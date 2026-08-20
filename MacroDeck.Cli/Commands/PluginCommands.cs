@@ -49,7 +49,7 @@ public static class PluginCommands
         cmd.SetHandler(async (InvocationContext ctx) =>
         {
             var id = ctx.ParseResult.GetValueForArgument(idArg);
-            Console.WriteLine(await clientFactory(ctx).PostAsync("api/plugins/store/install", new { extensionId = id }));
+            Console.WriteLine(await clientFactory(ctx).PostAsync("api/plugins/store/install", new { packageId = id }));
         });
         return cmd;
     }

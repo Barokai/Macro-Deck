@@ -14,8 +14,8 @@ Supply connection details via global options on every command, or set environmen
 
 ```bash
 # Environment variables (recommended)
-set MACRODECK_URL=http://localhost:8191
-set MACRODECK_API_KEY=your-api-key-here
+export MACRODECK_URL=http://localhost:8191
+export MACRODECK_API_KEY=your-api-key-here
 
 # Or per-command options
 macrodeck --url http://localhost:8191 --key your-api-key-here profile list
@@ -82,19 +82,17 @@ macrodeck button create abc123 root-folder-id --x 0 --y 0 --label "Mute"
 
 # Create a button with an action assignment (JSON inline)
 macrodeck button create abc123 root-folder-id --x 1 --y 0 --label "Scene 1" \
-  --actions-json '[{"pluginName":"OBS Plugin","actionClass":"SwitchSceneAction","configuration":{"scene":"Gaming"}}]'
+  --actions-json '[{"pluginName":"OBS Plugin","actionClass":"SwitchSceneAction","configuration":"{\"scene\":\"Gaming\"}"}]'
 ```
 
-The `--actions-json` parameter takes an array of action assignment objects:
+The `--actions-json` parameter takes an array of action assignment objects. `configuration` must be a JSON string:
 
 ```json
 [
   {
     "pluginName": "Plugin Display Name",
     "actionClass": "ActionClassName",
-    "configuration": {
-      "key": "value"
-    }
+    "configuration": "{\"key\":\"value\"}"
   }
 ]
 ```

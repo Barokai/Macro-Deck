@@ -319,7 +319,7 @@ public partial class SettingsView : UserControl
     {
         var key = MacroDeck.Configuration.AdminApiKey;
         txtAdminKey.Text = key;
-        var url = $"http://localhost:{MacroDeck.Configuration.HostPort}";
+        var url = BuildAdminApiUrl();
         lblMcpIntro.Text =
             "Run MacroDeck.Mcp.exe with environment variables to expose MacroDeck tools to any MCP-capable LLM client (Claude Desktop, VS Code Copilot, etc.).";
         lblMcpDesc.Text =
@@ -331,6 +331,29 @@ public partial class SettingsView : UserControl
             "Use the macrodeck CLI to manage profiles, buttons, variables and plugins from a terminal or shell scripts.";
         lblCliDesc.Text =
             $"macrodeck --url {url} --key {key} profile list";
+    }
+
+    private static string BuildAdminApiUrl()
+    {
+        var scheme = MacroDeck.Configuration.EnableSsl ? "https" : "http";
+        var host = NormalizeAdminApiHost(MacroDeck.Configuration.HostAddress);
+        return $"{scheme}://{host}:{MacroDeck.Configuration.HostPort}";
+    }
+
+    private static string NormalizeAdminApiHost(string? hostAddress)
+    {
+        if (string.IsNullOrWhiteSpace(hostAddress))
+        {
+            return "<host-or-ip>";
+        }
+
+        var host = hostAddress.Trim();
+        if (host is "0.0.0.0" or "::" or "[::]")
+        {
+            return "<host-or-ip>";
+        }
+
+        return host.Contains(':') && !host.StartsWith("[") ? $"[{host}]" : host;
     }
 
     private void BtnCopyApiKey_Click(object sender, EventArgs e)

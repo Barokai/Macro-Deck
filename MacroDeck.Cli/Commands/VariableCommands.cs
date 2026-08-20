@@ -42,8 +42,9 @@ public static class VariableCommands
         cmd.SetHandler(async (InvocationContext ctx) =>
         {
             var name = ctx.ParseResult.GetValueForArgument(nameArg);
-            var result = await clientFactory(ctx).PutAsync($"api/variables/{Uri.EscapeDataString(name)}", new
+            var result = await clientFactory(ctx).PutAsync("api/variables", new
             {
+                name,
                 value = ctx.ParseResult.GetValueForOption(valueOpt),
                 type = ctx.ParseResult.GetValueForOption(typeOpt),
                 creator = ctx.ParseResult.GetValueForOption(creatorOpt),

@@ -17,7 +17,7 @@ public class ProfileTools
         await _api.GetJsonAsync("api/profiles");
 
     [McpServerTool, Description(
-        "Get the full structure (all folders and buttons) of a specific profile by its profileId.")]
+        "Get metadata for a specific profile by its profileId. Use list_folders and list_buttons to inspect its folders and buttons.")]
     public async Task<string> GetProfile(
         [Description("The profileId returned by list_profiles.")] string profileId) =>
         await _api.GetJsonAsync($"api/profiles/{profileId}");

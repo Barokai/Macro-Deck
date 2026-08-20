@@ -44,10 +44,9 @@ public static class DeviceCommands
         cmd.SetHandler(async (InvocationContext ctx) =>
         {
             var cid = ctx.ParseResult.GetValueForArgument(clientIdArg);
-            var result = await clientFactory(ctx).PutAsync($"api/devices/{Uri.EscapeDataString(cid)}/blocked", new
-            {
-                blocked = ctx.ParseResult.GetValueForOption(blockedOpt),
-            });
+            var blocked = ctx.ParseResult.GetValueForOption(blockedOpt);
+            var result = await clientFactory(ctx)
+                .PutAsync($"api/devices/{Uri.EscapeDataString(cid)}/blocked?blocked={blocked.ToString().ToLowerInvariant()}", new { });
             Console.WriteLine(result);
         });
         return cmd;

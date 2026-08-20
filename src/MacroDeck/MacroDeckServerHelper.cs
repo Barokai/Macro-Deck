@@ -14,7 +14,7 @@ public static class MacroDeckServerHelper
     internal static bool UseHttps { get; private set; }
 
     public static async Task Setup(int port, X509Certificate2? certificate,
-        Action<IServiceCollection>? configureAdminServices = null)
+        Action<IServiceCollection> configureAdminServices)
     {
         if (_host is not null)
         {
@@ -47,7 +47,7 @@ public static class MacroDeckServerHelper
             })
             .ConfigureServices(services =>
             {
-                configureAdminServices?.Invoke(services);
+                configureAdminServices(services);
             })
             .Build();
 

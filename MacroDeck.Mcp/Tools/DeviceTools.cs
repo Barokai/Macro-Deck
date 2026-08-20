@@ -26,7 +26,9 @@ public class DeviceTools
         [Description("The clientId of the device.")] string clientId,
         [Description("true to block, false to unblock.")] bool blocked)
     {
-        var result = await _api.GetJsonAsync($"api/devices/{Uri.EscapeDataString(clientId)}/blocked?blocked={blocked}");
+        var result = await _api.PutJsonAsync(
+            $"api/devices/{Uri.EscapeDataString(clientId)}/blocked?blocked={blocked.ToString().ToLowerInvariant()}",
+            new { });
         return result;
     }
 }

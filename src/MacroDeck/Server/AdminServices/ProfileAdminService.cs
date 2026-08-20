@@ -37,6 +37,7 @@ public class ProfileAdminService : IProfileAdminService
     {
         var profile = ProfileManager.FindProfileById(profileId);
         if (profile is null) return false;
+        if (ProfileManager.Profiles.Count < 2) return false;
         ProfileManager.DeleteProfile(profile);
         return true;
     }
@@ -84,6 +85,7 @@ public class ProfileAdminService : IProfileAdminService
         if (profile is null) return false;
         var folder = ProfileManager.FindFolderById(folderId, profile);
         if (folder is null) return false;
+        if (folder.IsRootFolder) return false;
         ProfileManager.DeleteFolder(folder, profile);
         return true;
     }
